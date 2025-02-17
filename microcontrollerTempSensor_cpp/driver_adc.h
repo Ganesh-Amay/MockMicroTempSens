@@ -1,12 +1,10 @@
 #pragma once
 
 #include <cstdint>
-
-// Callback type for ADC conversion completion
-typedef void (*AdcCallback)(uint16_t rawValue);
+#include <functional>
 
 // Initialize the ADC, set up single channel, triggered by the timer, etc.
-void Adc_Init(AdcCallback callBack);
+void Adc_Init(std::function<void(uint16_t)> callBack);
 
 // Start the ADC conversion process (on real hardware, this may be automatic
 // once triggered)

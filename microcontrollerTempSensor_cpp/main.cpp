@@ -27,6 +27,7 @@ available, and performs any heavier computations*/
 #include "driver_clock.h"
 #include "driver_eeprom.h"
 #include "driver_timer.h"
+#include "globalFlags.h"
 #include "ledController.h"
 #include "revASensor.h"
 #include "revBSensor.h"
@@ -37,6 +38,7 @@ available, and performs any heavier computations*/
 namespace {
 // Global LED controller
 static LedController g_ledController;
+constexpr uint8_t nullTerminator{'\0'};
 
 // Callback for temperature data
 static void temperatureCallback(float temperatureC) {
@@ -82,12 +84,13 @@ int main() {
   Eeprom_I2C_Init();
 
   // Read hardware revision from EEPROM
-  uint8_t buffer[8] = {0};
+  uint8_t buffer[9] = {0};
   bool ok = Eeprom_ReadBytes(0, buffer, sizeof(buffer));
   if (!ok) {
     printf("EEPROM read failed.\n");
     // handle error
   }
+  buffer[8] = nullTerminator;
 
   // For example: 0=RevA, 1=RevB
   uint8_t hardwareRevision = buffer[0];
@@ -137,6 +140,12 @@ int main() {
   for (int i = 0; i < 200; i++) {
     // Simulate or handle other tasks, then WFI in real code:
     // __asm__("WFI"); // Wait for interrupt on real hardware
+    // Process ADC data in main loop
+    for (int i = 0; i < 200; i++) {
+      if (newDataAvailable) {
+        static_cast<RevASensor *>(sensor)->processData();
+      }
+    }
 
     // For PC mock, let's just artificially call the timer "tick" and ADC
     // simulate: calls onTimerInterrupt

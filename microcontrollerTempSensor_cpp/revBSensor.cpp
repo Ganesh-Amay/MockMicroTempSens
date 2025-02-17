@@ -1,15 +1,31 @@
 #include "revBSensor.h"
 #include "driver_adc.h"
+#include "globalFlags.h"
+#include <atomic>
 #include <cstdio>
 
-static RevBSensor *s_activeSensorB = nullptr;
+namespace {
+constexpr size_t BUFFER_SIZE{64};
+// Circular buffer for ADC values
+static uint16_t adcBuffer[BUFFER_SIZE];
+// Ring buffer indices
+static size_t head{0}, tail{0};
+} // namespace
 
 RevBSensor::RevBSensor() : m_callback(nullptr) {}
 
 void RevBSensor::init() {
-  s_activeSensorB = this;
-  Adc_Init(adcCallback);
-  printf("[RevB Sensor] Initialized (0.1 °C per digit).\n");
+  // Store ADC result in ISR, process in main loop
+  Adc_Init([this](uint16_t rawValue) {
+    // Store result in circular buffer
+    adcBuffer[head] = rawValue;
+    // Advance head, wrap if needed
+    head = (head + 1) % BUFFER_SIZE;
+    // Signal new data available
+    newDataAvailable = true;
+  });
+
+  printf("[RevB Sensor] Initialized (1 °C per digit).\n");
 }
 
 void RevBSensor::startSampling() {
@@ -21,11 +37,18 @@ void RevBSensor::setCallback(TemperatureReadyCallback callBack) {
   m_callback = callBack;
 }
 
-// This static function is called by the ADC driver
-void RevBSensor::adcCallback(uint16_t rawValue) {
-  if (s_activeSensorB) {
-    // 1 digit = 0.1°C => rawValue * 0.1
-    float temperature = static_cast<float>(rawValue) * 0.1f;
-    s_activeSensorB->m_callback(temperature);
+// Process ADC data outside ISR
+void RevBSensor::processData() {
+  // Process all new samples
+  while (tail != head) {
+    uint16_t value = adcBuffer[tail];
+    // Move buffer tail forward
+    tail = (tail + 1) % BUFFER_SIZE;
+    float temperature = static_cast<float>(value) * 0.1f;
+    if (m_callback) {
+      m_callback(temperature);
+    }
   }
+  // Reset flag when all data is processed
+  newDataAvailable = false;
 }
