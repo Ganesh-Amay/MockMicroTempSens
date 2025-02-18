@@ -1,10 +1,14 @@
 #include "driver_timer.h"
 #include <cstdio>
 
-static TimerCallback s_timerCallback = nullptr;
+namespace {
+// Store the callback function using std::function
+TimerCallback s_timerCallback;
+} // namespace
 
 void Timer_Init100us(TimerCallback cb) {
-  s_timerCallback = cb;
+  s_timerCallback = std::move(cb);
+
   // In real code, configure TIMx for 10kHz update event
   // TIMx->PSC, TIMx->ARR, etc.
   printf("[Timer] 10kHz init (mock)\n");

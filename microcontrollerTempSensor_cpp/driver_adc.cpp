@@ -5,9 +5,8 @@ namespace {
 // For demonstration, choose interrupt or DMA approach via a constexpr var
 // Set to true for DMA mode
 constexpr bool UseDma{false};
-
-static AdcCallback s_adcCallback = nullptr;
-
+// Actual definition of the variable
+std::function<void(uint16_t)> adcCallback = nullptr;
 // single channel for DMA mode
 // static uint16_t s_dmaBuffer[1];
 
@@ -20,8 +19,8 @@ static AdcCallback s_adcCallback = nullptr;
 // ADC1->CFGR |= ADC_CFGR_EXTSEL_3;    // Select TIM2_TRGO as external trigger
 // ADC1->CFGR |= ADC_CFGR_EXTEN_0; // Enable hardware triggering on rising
 // edge ADC1->CR |= ADC_CR_ADEN;        // Enable ADC
-void Adc_Init(AdcCallback callBack) {
-  s_adcCallback = callBack;
+void Adc_Init(std::function<void(uint16_t)> callBack) {
+  adcCallback = callBack;
   printf("[ADC] Init with timer trigger (mock)\n");
 }
 
@@ -52,13 +51,13 @@ void Adc_SimulateConversion(uint16_t mockValue) {
     // Then eventually a DMA Transfer Complete Interrupt (TCIF)  or
     // Half-Transfer Interrupt (HTIF) interrupt
 
-    // if (s_adcCallback) {
-    //   s_adcCallback(s_dmaBuffer[0]);
+    // if (adcCallback) {
+    //   adcCallback(s_dmaBuffer[0]);
     // }
   } else {
     // In interrupt mode, the ADC interrupt calls the callback
-    if (s_adcCallback) {
-      s_adcCallback(mockValue);
+    if (adcCallback) {
+      adcCallback(mockValue);
     }
   }
 }
