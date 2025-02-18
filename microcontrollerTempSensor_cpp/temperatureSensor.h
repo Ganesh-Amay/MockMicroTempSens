@@ -18,4 +18,7 @@ public:
 
   // Provide a way to set user callback
   virtual void setCallback(TemperatureReadyCallback callBack) = 0;
+
+  // Provide a way to process data
+   virtual void processData() = 0;
 };

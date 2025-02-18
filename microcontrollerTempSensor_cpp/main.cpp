@@ -141,12 +141,9 @@ int main() {
     // Simulate or handle other tasks, then WFI in real code:
     // __asm__("WFI"); // Wait for interrupt on real hardware
     // Process ADC data in main loop
-    for (int i = 0; i < 200; i++) {
       if (newDataAvailable) {
-        static_cast<RevASensor *>(sensor)->processData();
+        sensor->processData();
       }
-    }
-
     // For PC mock, let's just artificially call the timer "tick" and ADC
     // simulate: calls onTimerInterrupt
     Timer_SimulateTick();
