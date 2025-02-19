@@ -61,3 +61,17 @@ void Adc_SimulateConversion(uint16_t mockValue) {
     }
   }
 }
+
+// void ADC1_IRQHandler(void) {
+//   // Check if conversion is complete
+//   if (ADC1->SR & ADC_SR_EOC) {
+//     // Read ADC data (this also clears the EOC flag)
+//     uint16_t adc_value = ADC1->DR;
+//     // Process ADC value
+//   }
+//   // Check if Overrun occurred
+//   if (ADC1->SR & ADC_SR_OVR) {
+//     // Clear the Overrun flag
+//     ADC1->SR &= ~ADC_SR_OVR;
+//   }
+// }

@@ -35,7 +35,7 @@ void RevBSensor::processData() {
     // Process all new samples
     uint16_t value = ADCBuffer::adcBuffer[ADCBuffer::tail];
     ADCBuffer::tail = (ADCBuffer::tail + 1) % ADCBuffer::BUFFER_SIZE;
-    float temperature = static_cast<float>(value);
+    float temperature = static_cast<float>(value) * 0.1f;
     if (m_callback) {
       m_callback(temperature);
     }

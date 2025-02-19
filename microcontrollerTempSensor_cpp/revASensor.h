@@ -11,7 +11,7 @@ public:
   void init() override;
   void startSampling() override;
   void setCallback(TemperatureReadyCallback callBack) override;
-  void processData();
+  void processData() override;
 
 private:
   TemperatureReadyCallback m_callback;

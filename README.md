@@ -2,10 +2,10 @@
 
 This repository demonstrates a **bare-metal style** temperature monitoring system, designed for an STM32-like microcontroller but **mocked** to run on a PC. 
 
-May be **two** variants are provided:
+**Two** variants are provided:
 
 1. **C++ Version**: Uses classes (`RevASensor`, `RevBSensor`, etc.) and `std::function` for callbacks.
-
+2. **C Version**
 
 ## Project Structure
 
@@ -32,5 +32,13 @@ May be **two** variants are provided:
 ### Run the generated executable:
 ./demo
 
-  
+### 2. C Version
+
+1. **Navigate** to `microcontrollerTempSensor_c/`.
+2. **Build** by running:
+   ```bash
+   make
+
+### Run the generated executable:
+./demo
    

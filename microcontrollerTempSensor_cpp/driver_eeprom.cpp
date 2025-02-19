@@ -1,6 +1,6 @@
 #include "driver_eeprom.h"
 #include <cstdio>
-
+#include <string.h>
 // For demonstration, keep a mock buffer
 namespace {
 constexpr uint8_t hardwareRevA{0x00};
@@ -44,8 +44,6 @@ bool Eeprom_ReadBytes(std::size_t address, std::uint8_t *buffer,
   if (address + length > sizeof(s_mockEepromData)) {
     return false;
   }
-  for (std::size_t i = 0; i < length; i++) {
-    buffer[i] = s_mockEepromData[address + i];
-  }
+  memcpy(buffer, s_mockEepromData + address, length);
   return true;
 }
