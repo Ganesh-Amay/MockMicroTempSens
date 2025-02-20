@@ -43,3 +43,14 @@ void RevASensor::processData() {
   // Reset flag when all data is processed
   newDataAvailable = false;
 }
+
+// // Define the static instance pointer
+// RevASensor *RevASensor::s_activeSensor = nullptr;
+// void RevASensor::init()
+// {
+//   // Store the active instance pointer
+//   s_activeSensor = this;
+//   // Pass the static function as the callback
+//   Adc_Init(adcCallback);
+//   printf("[RevA Sensor] Initialized.\n");
+// }

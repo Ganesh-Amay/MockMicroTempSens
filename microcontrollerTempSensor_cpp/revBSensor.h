@@ -14,5 +14,5 @@ public:
 
 private:
   TemperatureReadyCallback m_callback;
-  static void adcCallback(uint16_t rawValue);
+  // static void adcCallback(uint16_t rawValue);
 };

@@ -15,5 +15,8 @@ public:
 
 private:
   TemperatureReadyCallback m_callback;
-  static void adcCallback(uint16_t rawValue);
+  // // Static pointer to track the instance
+  // static RevASensor *s_activeSensor;
+  // // Static function
+  // static void adcCallback(uint16_t rawValue);
 };
